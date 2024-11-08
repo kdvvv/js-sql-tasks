@@ -8,19 +8,26 @@ const config = {
 };
 
 // BEGIN (write your solution here)
-export default async function solution() {
-  const sql = postgres(config);
-
-  await sql`
+async function createTable(db) {
+  await db`
         CREATE TABLE IF NOT EXISTS articles (
             title VARCHAR(255),
             description VARCHAR(255)
         );
     `;
+}
 
-  await sql`
+async function insertArticle(db, title, description) {
+  await db`
         INSERT INTO articles (title, description)
-        VALUES ('Тест', 'Тест');
+        VALUES (${title}, ${description});
     `;
+}
+
+export default async function solution() {
+  const database = postgres(config);
+
+  await createTable(database);
+  await insertArticle(database, 'Тест', 'Тест');
 }
 // END

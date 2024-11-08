@@ -8,26 +8,25 @@ const config = {
 };
 
 // BEGIN (write your solution here)
-const solution = async (articles) => {
-  if (!Array.isArray(articles) || articles.length === 0) {
+const saveArticles = async (articlesArray) => {
+  if (!Array.isArray(articlesArray) || articlesArray.length === 0) {
     return [];
   }
 
-  const sql = postgres(config);
+  const databaseConnection = postgres(config);
 
-  const ids = [];
+  const articleIds = [];
 
-  for (const article of articles) {
-    const result = await sql`
+  for (const article of articlesArray) {
+    const insertionResult = await databaseConnection`
             INSERT INTO articles (title, description)
             VALUES (${article.title}, ${article.description}) RETURNING id;
         `;
 
-    ids.push(result[0].id);
+    articleIds.push(insertionResult[0].id);
   }
 
-  return ids;
+  return articleIds;
 }
-
-export default solution;
+export default saveArticles;
 // END
